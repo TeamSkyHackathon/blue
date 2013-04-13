@@ -1,10 +1,7 @@
 import numpy as np
+from sklearn.cross_validation import KFold
 
-
-##################### SETTINGS ###########################
-train_path = '/home/jaco/Downloads/train.csv'
-test_path = '/home/jaco/Downloads/train.csv'
-
+from settings import *
 
 ##################### HELPERS ############################
 def load_data(path, count, with_labels=False):
@@ -30,21 +27,38 @@ def load_data(path, count, with_labels=False):
 
 
 ################# TRAINING #######################
-label, a_features, b_features = load_data(train_path, 11, with_labels=True)
-
-
 def predict(a_features, b_features):
     """
     Magical functions that makes all predictions.
 
-    return: A user is more influencial than B
+    return: A user is more influential than B
     rtype: bool
     """
     pass
 
 
 #################### RESULTS ######################
-with open('submission.csv', 'w+') as f:
-    for af, bf in load_data(test_path, 11):
-        a_better = predict(af, bf)
-        f.write(bool(a_better)) # label '1' means A is more influential than B. 0 means B is more influential than A
+def produce_results(fname):
+    with open(fname, 'w+') as f:
+        af, bf = load_data(TEST_PATH, 11)
+        for a_features, b_features in zip(list(af), list(bf)):
+            a_better = predict(a_features, b_features)
+            f.write(bool(a_better)) # label '1' means A is more influential than B. 0 means B is more influential than A
+
+
+#################### MAIN ##########################
+if __name__ == "__main__":
+    # Load data
+    labels, A, B = load_data(TRAIN_PATH, 11, with_labels=True)
+
+    # split original set into training and testing
+    kf = KFold(len(A), 2)
+    for train_indices, test_indices in kf:
+        train_labels, train_A, train_B = labels[train_indices], A[train_indices], B[train_indices]
+        # learn model using training data
+
+        test_labels, test_A, test_B = labels[test_indices], A[test_indices], B[test_indices]
+        # test model using test data
+
+    # produce results
+    produce_results('submission.csv')

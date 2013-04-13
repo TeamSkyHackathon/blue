@@ -1,4 +1,4 @@
 blue
 ====
 
-BiigDataHackathon code
+BigDataHackathon code
